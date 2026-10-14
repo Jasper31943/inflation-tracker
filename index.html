@@ -55,11 +55,18 @@ a{color:#22D3EE}
 @supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){.glass{background:rgba(20,20,40,.85)}}
 .bubbles{display:flex!important;flex-wrap:wrap;justify-content:center;gap:16px 0;margin-top:24px;text-align:center}.bubbles .bub{width:25%}
 @media (max-width:700px){.bubbles{gap:22px 0;padding-bottom:200px;margin-top:18px}.bubbles .bub{width:33.33%}.ball{width:72px;height:72px}}
+.amt{font:inherit;font-family:"Space Grotesk";font-size:22px;width:100%;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.2);color:#fff;border-radius:12px;padding:8px 12px}
+.chips{display:flex;gap:8px;margin-top:10px}.chip{flex:1;font:inherit;font-size:13px;padding:6px 0;border-radius:99px;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.06);color:#EEF;cursor:pointer}
+.amt{font-family:"Space Grotesk",sans-serif!important;font-size:28px!important;text-align:right;background:rgba(255,255,255,.06)!important;border:1.5px solid rgba(255,255,255,.14)!important;outline:none;padding:12px 16px!important;-webkit-appearance:none;appearance:none}
+.amt:focus{border-color:transparent!important;background:linear-gradient(#17172b,#17172b) padding-box,linear-gradient(90deg,#A78BFA,#22D3EE) border-box!important}
+.amt::-webkit-inner-spin-button,.amt::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}.amt{-moz-appearance:textfield}
+.chip.on{background:linear-gradient(90deg,#A78BFA,#22D3EE);color:#0B0B1A;font-weight:700;border-color:transparent}
+.money{font-family:"Space Grotesk",sans-serif;font-size:32px;font-weight:700;margin-left:4px}.money.up{color:#FF4D6D}.money.down{color:#2EE6A6}.money.mid{color:#C4B5FD}
 </style></head><body>
 <div class="bg"><div class="orb o1"></div><div class="orb o2"></div><div class="orb o3"></div></div>
 <main>
 <section id="upload">
- <h1>點一點，<wbr>算出你的通膨</h1><p class="sub">點你常花錢的項目，再拉一下花多少。不用上傳、不用登入。</p>
+ <h1>點一點，<wbr>算出你的通膨</h1><p class="sub">點你常花錢的項目，填每月大概花多少。不用上傳、不用登入。</p>
  <span class="pill">🔒 不需要任何個人資料</span>
  <div class="bubbles" id="bubbles"></div>
  <div id="gowrap" style="text-align:center;margin-top:20px"><div class="glass" id="panel"></div><button class="btn primary" id="go" disabled>先選 1 個以上</button></div>
@@ -76,29 +83,32 @@ function toDate(s){s=s.replace(/[\/.]/g,'-');let m=s.match(/^(\d{3,4})-?(\d{2})-
 function norm(n){n=n.normalize('NFKC').toLowerCase().replace(/\s+/g,'');n=n.replace(/鮮奶/g,'鮮乳').replace(/(\d+(?:\.\d+)?)(毫升|ml|cc)/g,'$1ml').replace(/(\d+(?:\.\d+)?)(公升|l)(?![a-z])/g,(m,x)=>Math.round(x*1000)+'ml').replace(/(\d+(?:\.\d+)?)(公克|克|g)(?![a-z])/g,'$1g');n=n.replace(/(\d{2,4})$/,'$1ml');return n}
 function fail(msg){const d=$('#drop');d.classList.remove('err');void d.offsetWidth;d.classList.add('err');$('#err').textContent=msg;$('#out').innerHTML=''}
 const fmt=x=>(x>=0?'+':'')+x.toFixed(1)+'%';
-const D=window.CPI_DATA,sel={},IC={"便當": "<rect x=\"3\" y=\"7\" width=\"18\" height=\"12\" rx=\"2\"/><path d=\"M3 11h18M12 11v8\"/>", "飲料": "<path d=\"M6 8h12l-1.5 13h-9z\"/><path d=\"M5 8h14M13 8l2-6\"/>", "咖啡": "<path d=\"M4 9h13v6a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5z\"/><path d=\"M17 11h1.5a2.5 2.5 0 0 1 0 5H17M8 3v3M12 3v3\"/>", "房租": "<path d=\"M3 11l9-7 9 7\"/><path d=\"M5 10v10h14V10M10 20v-6h4v6\"/>", "油錢": "<path d=\"M4 21V5a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v16M3 21h12M4 10h10\"/><path d=\"M14 8h2a2 2 0 0 1 2 2v6a1.5 1.5 0 0 0 3 0V8l-3-3\"/>", "大眾運輸": "<rect x=\"5\" y=\"3\" width=\"14\" height=\"14\" rx=\"3\"/><path d=\"M5 11h14M8 20l2-3M16 20l-2-3\"/><circle cx=\"9\" cy=\"14\" r=\".6\"/><circle cx=\"15\" cy=\"14\" r=\".6\"/>", "日用品": "<path d=\"M8 3h8v4H8zM7 7h10l1 14H6z\"/><path d=\"M9 12h6\"/>", "水電瓦斯": "<path d=\"M9 18h6M10 21h4\"/><path d=\"M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z\"/>"};
+const D=window.CPI_DATA,sel={},IC={"三餐": "<rect x=\"3\" y=\"7\" width=\"18\" height=\"12\" rx=\"2\"/><path d=\"M3 11h18M12 11v8\"/>", "飲料": "<path d=\"M6 8h12l-1.5 13h-9z\"/><path d=\"M5 8h14M13 8l2-6\"/>", "咖啡": "<path d=\"M4 9h13v6a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5z\"/><path d=\"M17 11h1.5a2.5 2.5 0 0 1 0 5H17M8 3v3M12 3v3\"/>", "房租": "<path d=\"M3 11l9-7 9 7\"/><path d=\"M5 10v10h14V10M10 20v-6h4v6\"/>", "油錢": "<path d=\"M4 21V5a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v16M3 21h12M4 10h10\"/><path d=\"M14 8h2a2 2 0 0 1 2 2v6a1.5 1.5 0 0 0 3 0V8l-3-3\"/>", "大眾運輸": "<rect x=\"5\" y=\"3\" width=\"14\" height=\"14\" rx=\"3\"/><path d=\"M5 11h14M8 20l2-3M16 20l-2-3\"/><circle cx=\"9\" cy=\"14\" r=\".6\"/><circle cx=\"15\" cy=\"14\" r=\".6\"/>", "日用品": "<path d=\"M8 3h8v4H8zM7 7h10l1 14H6z\"/><path d=\"M9 12h6\"/>", "水電瓦斯": "<path d=\"M9 18h6M10 21h4\"/><path d=\"M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z\"/>"};
 const svg=k=>`<svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">${IC[k]||''}</svg>`;
-let lastI=null;
+let lastI=null;function markChips(){document.querySelectorAll('.chip').forEach(c=>c.classList.toggle('on',+c.dataset.v===sel[lastI]))}const CH={"三餐":[6000,9000,12000],"飲料":[500,1000,2000],"房租":[6000,10000,15000],"油錢":[500,1000,2000],"大眾運輸":[600,1200,2000],"日用品":[300,600,1000],"水電瓦斯":[800,1500,2500]};
+const money=n=>'NT$ '+String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g,',');
 function drawBubbles(){$('#bubbles').innerHTML=D.items.map((it,i)=>{const on=sel[i]!=null,na=typeof it.rate!='number';return `<div class="bub ${on?'on':''} ${na?'na':''} ${i==lastI?'cur':''}" data-i="${i}"><div class="ball">${svg(it.key)}</div><div class="lbl">${it.key}${na?'<div class="sub" style="font-size:11px">資料待補</div>':''}</div></div>`}).join('');
  const n=Object.keys(sel).length;$('#go').disabled=!n;$('#go').textContent=n?'算出我的通膨':'先選 1 個以上';
- const p=$('#panel');if(lastI!=null&&sel[lastI]!=null){p.classList.add('show');p.innerHTML=`<div class="plbl" style="display:flex;justify-content:space-between"><span>${D.items[lastI].key}：花多少？</span><button class="btn" id="rm" style="padding:2px 12px;font-size:12px">移除</button></div><input type="range" min="1" max="3" value="${sel[lastI]}" id="rng"><div class="ticks"><span>少</span><span>普通</span><span>多</span></div>`;$('#rng').oninput=e=>{sel[lastI]=+e.target.value};$('#rm').onclick=()=>{delete sel[lastI];lastI=null;drawBubbles()}}else{p.classList.remove('show');p.innerHTML='<div class="plbl sub">點泡泡選你常花的項目，最多 7 個</div>'}
- document.querySelectorAll('.bub .ball').forEach(b=>b.onclick=()=>{const i=+b.parentNode.dataset.i;if(typeof D.items[i].rate!='number')return;if(sel[i]==null)sel[i]=2;lastI=i;drawBubbles()})}
+ const p=$('#panel');if(lastI!=null&&sel[lastI]!=null){const k=D.items[lastI].key;p.classList.add('show');p.innerHTML=`<div class="plbl" style="display:flex;justify-content:space-between;align-items:center"><span>${k}：每月大概花多少？</span><button class="btn" id="rm" style="padding:2px 12px;font-size:12px">移除</button></div><div style="display:flex;align-items:center;gap:8px"><span class="sub">NT$</span><input id="amt" type="number" inputmode="numeric" pattern="[0-9]*" min="0" value="${sel[lastI]}" class="amt"></div><div class="chips">${(CH[k]||[]).map(v=>`<button class="chip" data-v="${v}">${v.toLocaleString()}</button>`).join('')}</div>`;
+ $('#amt').oninput=e=>{sel[lastI]=Math.max(0,+e.target.value||0);markChips()};markChips();$('#rm').onclick=()=>{delete sel[lastI];lastI=null;drawBubbles()};
+ p.querySelectorAll('.chip').forEach(c=>c.onclick=()=>{sel[lastI]=+c.dataset.v;$('#amt').value=c.dataset.v;markChips()})}else{p.classList.remove('show');p.innerHTML='<div class="plbl sub">點泡泡選你常花的項目，再填每月大概花多少</div>'}
+ document.querySelectorAll('.bub .ball').forEach(b=>b.onclick=()=>{const i=+b.parentNode.dataset.i;if(typeof D.items[i].rate!='number')return;if(sel[i]==null)sel[i]=(CH[D.items[i].key]||[0,1000])[1];lastI=i;drawBubbles()})}
 function compute(){
  const picked=Object.entries(sel).map(([i,w])=>({...D.items[i],w}));const ok=picked.filter(p=>typeof p.rate=='number');
  if(!ok.length){$('#out').innerHTML='<div class="glass warn"><b>官方資料還沒接上</b><div class="warntxt">各分類的 CPI 年增率還沒填入，所以暫時算不出數字。</div></div>';return}
- const W=ok.reduce((x,p)=>x+p.w,0),annual=ok.reduce((x,p)=>x+p.w*p.rate,0)/W,cpi=D.official;
+ const ok2=ok.filter(p=>p.w>0);if(!ok2.length){$('#out').innerHTML='<div class="glass warn"><div class="warntxt">請至少幫一個項目填上大於 0 的金額。</div></div>';return}ok.length=0;ok.push(...ok2);const W=ok.reduce((x,p)=>x+p.w,0),extra=ok.reduce((x,p)=>x+p.w-p.w/(1+p.rate/100),0),annual=ok.reduce((x,p)=>x+p.w*p.rate,0)/W,cpi=D.official;
  const wk=ok.filter(p=>typeof p.weight=='number'),cov=wk.length?wk.reduce((x,p)=>x+p.weight,0)/10:null;
  const hasO=typeof cpi=='number',diff=hasO?annual-cpi:annual,cls=!hasO?(annual>=0?'up':'down'):(diff>0.5?'up':(diff<-0.5?'down':'mid'));
  const cmp=!hasO?'':(Math.abs(diff)<=0.5?`官方 ${fmt(cpi)}，跟官方差不多，你很會挑`:diff>0?`官方 ${fmt(cpi)}，你比官方高 ${diff.toFixed(1)} 個百分點`:`官方 ${fmt(cpi)}，比官方低 ${(-diff).toFixed(1)} 個百分點，你的錢包撐得不錯`);
  const list=[...ok].sort((a,b)=>b.rate-a.rate);const culprit=[...ok].sort((a,b)=>b.w*b.rate-a.w*a.rate)[0];const cul=culprit.rate>0?`拉高你通膨的元兇：${culprit.key} ${fmt(culprit.rate)}`:'';
- $('#out').innerHTML=`<div class="hero"><div class="sub" style="font-size:20px">我的體感通膨</div><div class="num ${cls}">${fmt(annual)}</div><div class="off" style="margin-top:12px">${cmp}</div>${cul?`<div style="margin-top:18px;font-size:clamp(16px,4.5vw,20px)">🔥 ${cul}</div>`:''}<div class="sub" style="margin-top:40px">↓ 往下看細節</div></div>
- <div class="glass"><b>依你選的 ${ok.length} 項花費計算</b><div class="sub" style="font-size:13px;margin-top:6px">各項年增率來自主計總處 ${D.period} 物價統計，依你調的花費比例加權。</div></div>
+ $('#out').innerHTML=`<div class="hero"><div class="sub" style="font-size:20px">我的體感通膨</div><div class="num ${cls}">${fmt(annual)}</div><div class="off" style="margin-top:12px">${cmp}</div><div style="margin-top:14px;font-size:clamp(16px,4.5vw,20px)">${extra>=0?'每月比去年多花':'每月比去年少花'} <span class="money ${cls}">${money(Math.abs(extra))}</span></div>${cul?`<div style="margin-top:12px;font-size:clamp(16px,4.5vw,20px)">🔥 ${cul}</div>`:''}<div class="sub" style="margin-top:40px">↓ 往下看細節</div></div>
+ <div class="glass"><b>依你填的 ${ok.length} 項、每月共 ${money(W)} 計算</b><div class="sub" style="font-size:13px;margin-top:6px">各項年增率來自主計總處 ${D.period} 物價統計，依你填的金額加權；「多花多少」是用你現在的花費回推去年同樣東西的價格。</div></div>
  <div class="glass"><b>你的花費裡漲最多的</b>${list.map(x=>`<div class="item"><span>${x.icon} ${x.key} <span class="sub" style="font-size:12px">${x.cpi}</span></span><span class="num ${x.rate>=0?'up':'down'}">${fmt(x.rate)}</span></div>`).join('')}</div>
  <div class="glass"><b>投資門檻</b><div class="num" style="font-size:48px">${Math.max(annual,0).toFixed(1)}%</div><div class="sub">你的投資年報酬至少要這麼多，錢才沒有實際縮水。</div></div>
  <div class="glass" style="text-align:center"><button class="btn primary" id="share">產生分享圖卡</button><div id="img"></div></div>`;
- $('#share').onclick=()=>shareCard(annual,typeof cpi=='number'?cpi:NaN,cul);$('#out').scrollIntoView({behavior:'smooth'});
+ $('#share').onclick=()=>shareCard(annual,typeof cpi=='number'?cpi:NaN,cul,extra);$('#out').scrollIntoView({behavior:'smooth'});
 }
-async function shareCard(annual,cpi,cul){
+async function shareCard(annual,cpi,cul,extra){
  try{await Promise.all(['700 260px "Space Grotesk"','700 64px "Noto Sans TC"','400 56px "Noto Sans TC", sans-serif'].map(f=>document.fonts.load(f)))}catch(e){}
  const c=document.createElement('canvas');c.width=1080;c.height=1920;const x=c.getContext('2d');
  x.fillStyle='#0B0B1A';x.fillRect(0,0,1080,1920);x.filter='blur(120px)';
@@ -107,7 +117,7 @@ async function shareCard(annual,cpi,cul){
  x.font='700 64px "Noto Sans TC"';x.fillText('我的體感通膨',540,760);
  const dd=isNaN(cpi)?annual:annual-cpi,col=isNaN(cpi)?(annual<0?'#2EE6A6':'#FF4D6D'):(dd>0.5?'#FF4D6D':(dd<-0.5?'#2EE6A6':'#C4B5FD'));x.shadowColor=col;x.shadowBlur=60;x.fillStyle=col;x.font='700 260px "Space Grotesk", "Noto Sans TC", sans-serif';x.fillText(fmt(annual),540,1040);
  x.shadowBlur=0;x.fillStyle='#94A3B8';x.font='400 56px "Noto Sans TC", sans-serif';if(!isNaN(cpi))x.fillText('官方 CPI '+fmt(cpi),540,1180);
- if(cul){x.fillStyle='#FFD3DB';x.font='700 52px "Noto Sans TC", sans-serif';x.fillText('🔥 '+cul.replace('你','我'),540,1330)}x.fillStyle='#EEF';x.font='700 44px "Noto Sans TC"';x.fillText('體感通膨儀表板',540,1750);x.fillStyle='#94A3B8';x.font='400 36px "Space Grotesk", sans-serif';x.fillText('jasper31943.github.io/inflation-tracker',540,1820);
+ if(extra!=null){x.fillStyle='#fff';x.fillStyle=col;x.font='700 84px "Space Grotesk", "Noto Sans TC", sans-serif';x.fillText(extra>=0?'每月比去年多花 '+money(extra):'每月比去年少花 '+money(-extra),540,1300)}if(cul){x.fillStyle='#FFD3DB';x.font='700 52px "Noto Sans TC", sans-serif';x.fillText('🔥 '+cul.replace('你','我'),540,1400)}x.fillStyle='#EEF';x.font='700 44px "Noto Sans TC"';x.fillText('體感通膨儀表板',540,1750);x.fillStyle='#94A3B8';x.font='400 36px "Space Grotesk", sans-serif';x.fillText('jasper31943.github.io/inflation-tracker',540,1820);
  const u=c.toDataURL();$('#img').innerHTML=`<img src="${u}"><br><a download="my-inflation.png" href="${u}">下載圖卡</a>`;
 }
 drawBubbles();$('#go').onclick=compute;$('#src').textContent=D.source?`資料來源：${D.source}（${D.period}）`:'';
