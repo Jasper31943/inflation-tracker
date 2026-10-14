@@ -41,7 +41,7 @@ input[type=number]{font:inherit;background:rgba(255,255,255,.08);border:1px soli
 .hero{text-align:center;min-height:70vh;display:flex;flex-direction:column;justify-content:center}
 .hero .num{font-size:clamp(64px,22vw,120px);line-height:1.1}.hero .sub:first-child{font-size:clamp(20px,6vw,26px)!important}.hero .off{font-size:clamp(16px,4.5vw,20px)}
 .up{color:var(--up);text-shadow:0 0 32px rgba(255,77,109,.6)}.down{color:var(--down);text-shadow:0 0 32px rgba(46,230,166,.6)}
-.off{color:var(--off)}
+.off{color:var(--off)}.mid{color:#C4B5FD;text-shadow:0 0 32px rgba(196,181,253,.6)}
 .bar{height:12px;border-radius:99px;background:rgba(255,255,255,.1);overflow:hidden;margin:12px 0}
 .bar>div{height:100%;background:linear-gradient(90deg,#22D3EE,#7C5CFF,#FF4D8D)}
 .glass.warn{border-color:var(--amber)}.warntxt{color:var(--amber);font-size:14px}
@@ -84,7 +84,7 @@ function compute(){
  if(!ok.length){$('#out').innerHTML='<div class="glass warn"><b>官方資料還沒接上</b><div class="warntxt">各分類的 CPI 年增率還沒填入，所以暫時算不出數字。</div></div>';return}
  const W=ok.reduce((x,p)=>x+p.w,0),annual=ok.reduce((x,p)=>x+p.w*p.rate,0)/W,cpi=D.official;
  const wk=ok.filter(p=>typeof p.weight=='number'),cov=wk.length?wk.reduce((x,p)=>x+p.weight,0)/10:null;
- const hasO=typeof cpi=='number',diff=hasO?annual-cpi:annual,cls=diff>0.5?'up':(diff<-0.5?'down':'up');
+ const hasO=typeof cpi=='number',diff=hasO?annual-cpi:annual,cls=!hasO?(annual>=0?'up':'down'):(diff>0.5?'up':(diff<-0.5?'down':'mid'));
  const cmp=!hasO?'':(Math.abs(diff)<=0.5?`官方 ${fmt(cpi)}，跟官方差不多，你很會挑`:diff>0?`官方 ${fmt(cpi)}，你比官方高 ${diff.toFixed(1)} 個百分點`:`官方 ${fmt(cpi)}，比官方低 ${(-diff).toFixed(1)} 個百分點，你的錢包撐得不錯`);
  const list=[...ok].sort((a,b)=>b.rate-a.rate);const culprit=[...ok].sort((a,b)=>b.w*b.rate-a.w*a.rate)[0];const cul=culprit.rate>0?`拉高你通膨的元兇：${culprit.key} ${fmt(culprit.rate)}`:'';
  $('#out').innerHTML=`<div class="hero"><div class="sub" style="font-size:20px">我的體感通膨</div><div class="num ${cls}">${fmt(annual)}</div><div class="off" style="margin-top:12px">${cmp}</div>${cul?`<div style="margin-top:18px;font-size:clamp(16px,4.5vw,20px)">🔥 ${cul}</div>`:''}<div class="sub" style="margin-top:40px">↓ 往下看細節</div></div>
@@ -101,7 +101,7 @@ async function shareCard(annual,cpi,cul){
  [['#7C5CFF',200,350,420],['#FF4D8D',900,1500,460],['#22D3EE',600,900,300]].forEach(([col,cx,cy,r])=>{x.globalAlpha=.6;x.fillStyle=col;x.beginPath();x.arc(cx,cy,r,0,7);x.fill()});
  x.filter='none';x.globalAlpha=1;x.textAlign='center';x.fillStyle='#EEF';
  x.font='700 64px "Noto Sans TC"';x.fillText('我的體感通膨',540,760);
- const col=(!isNaN(cpi)&&annual-cpi< -0.5)||(isNaN(cpi)&&annual<0)?'#2EE6A6':'#FF4D6D';x.shadowColor=col;x.shadowBlur=60;x.fillStyle=col;x.font='700 260px "Space Grotesk", "Noto Sans TC", sans-serif';x.fillText(fmt(annual),540,1040);
+ const dd=isNaN(cpi)?annual:annual-cpi,col=isNaN(cpi)?(annual<0?'#2EE6A6':'#FF4D6D'):(dd>0.5?'#FF4D6D':(dd<-0.5?'#2EE6A6':'#C4B5FD'));x.shadowColor=col;x.shadowBlur=60;x.fillStyle=col;x.font='700 260px "Space Grotesk", "Noto Sans TC", sans-serif';x.fillText(fmt(annual),540,1040);
  x.shadowBlur=0;x.fillStyle='#94A3B8';x.font='400 56px "Noto Sans TC", sans-serif';if(!isNaN(cpi))x.fillText('官方 CPI '+fmt(cpi),540,1180);
  if(cul){x.fillStyle='#FFD3DB';x.font='700 52px "Noto Sans TC", sans-serif';x.fillText('🔥 '+cul.replace('你','我'),540,1330)}x.fillStyle='#EEF';x.font='700 44px "Noto Sans TC"';x.fillText('體感通膨儀表板',540,1750);x.fillStyle='#94A3B8';x.font='400 36px "Space Grotesk", sans-serif';x.fillText('jasper31943.github.io/inflation-tracker',540,1820);
  const u=c.toDataURL();$('#img').innerHTML=`<img src="${u}"><br><a download="my-inflation.png" href="${u}">下載圖卡</a>`;
