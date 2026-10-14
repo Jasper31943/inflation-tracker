@@ -13,20 +13,21 @@ main{position:relative;z-index:1;max-width:760px;margin:auto;padding:48px 20px}
 .glass{background:rgba(255,255,255,.06);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,.12);border-radius:24px;padding:24px;margin:18px 0;display:block;position:relative}
 h1{font-weight:900;font-size:30px;margin:0 0 6px;word-break:keep-all}
 .bubbles{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:24px;text-align:center}
-.bub{display:flex;flex-direction:column;align-items:center;gap:8px;font-size:14px;height:190px}
+.bub{display:flex;flex-direction:column;align-items:center;gap:10px;font-size:14px}
 .ball{width:84px;height:84px;flex:none;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#94A3B8;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.15);transition:transform .25s,box-shadow .25s,background .25s}
-.bub.on .ball{transform:scale(1.25);color:#fff;background:radial-gradient(circle at 30% 30%,rgba(124,92,255,.75),rgba(34,211,238,.4));box-shadow:0 0 30px rgba(124,92,255,.6);border-color:rgba(255,255,255,.4)}
-.bub.on .lbl{margin-top:12px}.slot{width:100%;height:46px}.bub.na .ball{opacity:.35;cursor:default}
-.slot input{-webkit-appearance:none;appearance:none;width:100%;height:6px;border-radius:99px;background:linear-gradient(90deg,#7C5CFF,#22D3EE);outline:none}
-.slot input::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 0 10px rgba(124,92,255,.8);cursor:pointer}
-.slot input::-moz-range-thumb{width:20px;height:20px;border-radius:50%;background:#fff;border:0}
-.ticks{display:flex;justify-content:space-between;font-size:11px;color:#94A3B8;margin-top:4px}
+.bub.on .ball{transform:scale(1.15);color:#fff;background:radial-gradient(circle at 30% 30%,rgba(124,92,255,.75),rgba(34,211,238,.4));box-shadow:0 0 30px rgba(124,92,255,.6);border-color:rgba(255,255,255,.4)}
+.bub.cur .ball{outline:2px solid rgba(255,255,255,.7);outline-offset:4px}.bub.na .ball{opacity:.35;cursor:default}
+#panel{max-width:420px;margin:0 auto 12px;padding:12px 18px;text-align:left}.plbl{font-size:14px;margin-bottom:8px}
+#panel input{-webkit-appearance:none;appearance:none;width:100%;height:6px;border-radius:99px;background:linear-gradient(90deg,#7C5CFF,#22D3EE);outline:none}
+#panel input::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 0 10px rgba(124,92,255,.8);cursor:pointer}
+#panel input::-moz-range-thumb{width:20px;height:20px;border-radius:50%;background:#fff;border:0}
+.ticks{display:flex;justify-content:space-between;font-size:12px;color:#94A3B8;margin-top:6px}
 #go{min-width:220px;height:56px;font-size:17px}.btn:disabled{opacity:.4;cursor:default}
-@media (max-width:700px){.bubbles{grid-template-columns:repeat(2,1fr);padding-bottom:90px}.ball{width:72px;height:72px}.bub{height:180px}
+@media (max-width:700px){.bubbles{grid-template-columns:repeat(3,1fr);gap:24px 8px;padding-bottom:190px;margin-top:18px}.ball{width:72px;height:72px}.bub{font-size:13px;gap:8px}
  #gowrap{position:fixed;left:0;right:0;bottom:0;padding:12px 16px calc(12px + env(safe-area-inset-bottom));background:linear-gradient(transparent,#0B0B1A 40%);z-index:5;margin:0!important}#go{width:100%;border-radius:16px}}
 .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.steps .glass{margin:0;padding:18px}.steps b{display:block;font-family:"Space Grotesk";font-size:28px;background:linear-gradient(90deg,#7C5CFF,#22D3EE);-webkit-background-clip:text;color:transparent}
 @media (max-width:700px){.bubbles{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:24px;text-align:center}.bub{display:flex;flex-direction:column;align-items:center;gap:6px;font-size:14px}.ball{border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:32px;cursor:pointer;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.15);backdrop-filter:blur(12px);transition:.25s}.bub.on .ball{background:radial-gradient(circle at 30% 30%,rgba(124,92,255,.7),rgba(34,211,238,.35));box-shadow:0 0 30px rgba(124,92,255,.6);border-color:rgba(255,255,255,.4)}.bub input{width:90px;accent-color:#7C5CFF}.btn:disabled{opacity:.4;cursor:default}
-@media (max-width:700px){.bubbles{grid-template-columns:repeat(2,1fr)}}
+
 .steps{grid-template-columns:1fr}}.sub{color:var(--off)}
 .pill{display:inline-flex;gap:6px;align-items:center;background:rgba(46,230,166,.12);color:var(--down);border:1px solid rgba(46,230,166,.35);padding:6px 14px;border-radius:99px;font-size:14px}
 .drop{text-align:center;padding:56px 24px;border:1.5px dashed rgba(255,255,255,.25);cursor:pointer;transition:.2s}
@@ -52,6 +53,8 @@ a{color:#22D3EE}
 @media (max-width:700px){.orb{animation:none;filter:blur(60px);opacity:.4}.glass{backdrop-filter:none;-webkit-backdrop-filter:none;background:rgba(20,20,40,.85)}}
 @media (prefers-reduced-motion:reduce){.orb{animation:none}.drop.err{animation:none}}
 @supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){.glass{background:rgba(20,20,40,.85)}}
+.bubbles{display:flex!important;flex-wrap:wrap;justify-content:center;gap:16px 0;margin-top:24px;text-align:center}.bubbles .bub{width:25%}
+@media (max-width:700px){.bubbles{gap:22px 0;padding-bottom:200px;margin-top:18px}.bubbles .bub{width:33.33%}.ball{width:72px;height:72px}}
 </style></head><body>
 <div class="bg"><div class="orb o1"></div><div class="orb o2"></div><div class="orb o3"></div></div>
 <main>
@@ -59,7 +62,7 @@ a{color:#22D3EE}
  <h1>點一點，<wbr>算出你的通膨</h1><p class="sub">點你常花錢的項目，再拉一下花多少。不用上傳、不用登入。</p>
  <span class="pill">🔒 不需要任何個人資料</span>
  <div class="bubbles" id="bubbles"></div>
- <div id="gowrap" style="text-align:center;margin-top:20px"><button class="btn primary" id="go" disabled>先選 1 個以上</button></div>
+ <div id="gowrap" style="text-align:center;margin-top:20px"><div class="glass" id="panel"></div><button class="btn primary" id="go" disabled>先選 1 個以上</button></div>
  <p class="sub" id="src" style="font-size:12px;text-align:center"></p>
 </section>
 <section id="out"></section>
@@ -73,12 +76,13 @@ function toDate(s){s=s.replace(/[\/.]/g,'-');let m=s.match(/^(\d{3,4})-?(\d{2})-
 function norm(n){n=n.normalize('NFKC').toLowerCase().replace(/\s+/g,'');n=n.replace(/鮮奶/g,'鮮乳').replace(/(\d+(?:\.\d+)?)(毫升|ml|cc)/g,'$1ml').replace(/(\d+(?:\.\d+)?)(公升|l)(?![a-z])/g,(m,x)=>Math.round(x*1000)+'ml').replace(/(\d+(?:\.\d+)?)(公克|克|g)(?![a-z])/g,'$1g');n=n.replace(/(\d{2,4})$/,'$1ml');return n}
 function fail(msg){const d=$('#drop');d.classList.remove('err');void d.offsetWidth;d.classList.add('err');$('#err').textContent=msg;$('#out').innerHTML=''}
 const fmt=x=>(x>=0?'+':'')+x.toFixed(1)+'%';
-const D=window.CPI_DATA,sel={},IC={"便當": "<rect x=\"3\" y=\"7\" width=\"18\" height=\"12\" rx=\"2\"/><path d=\"M3 11h18M12 11v8\"/>", "飲料": "<path d=\"M6 8h12l-1.5 13h-9z\"/><path d=\"M5 8h14M13 8l2-6\"/>", "咖啡": "<path d=\"M4 9h13v6a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5z\"/><path d=\"M17 11h1.5a2.5 2.5 0 0 1 0 5H17M8 3v3M12 3v3\"/>", "房租": "<path d=\"M3 11l9-7 9 7\"/><path d=\"M5 10v10h14V10M10 20v-6h4v6\"/>", "油錢": "<path d=\"M4 21V5a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v16M3 21h12M4 10h10\"/><path d=\"M14 8h2a2 2 0 0 1 2 2v6a1.5 1.5 0 0 0 3 0V8l-3-3\"/>", "大眾運輸": "<rect x=\"5\" y=\"3\" width=\"14\" height=\"14\" rx=\"3\"/><path d=\"M5 11h14M8 20l2-3M16 20l-2-3\"/><circle cx=\"9\" cy=\"14\" r=\".6\"/><circle cx=\"15\" cy=\"14\" r=\".6\"/>", "日用品": "<path d=\"M8 3h8v4H8zM7 7h10l1 14H6z\"/><path d=\"M9 12h6\"/>", "水電瓦斯": "<path d=\"M3 7l9-4 9 4v10l-9 4-9-4z\"/><path d=\"M3 7l9 4 9-4M12 11v10\"/>"};
+const D=window.CPI_DATA,sel={},IC={"便當": "<rect x=\"3\" y=\"7\" width=\"18\" height=\"12\" rx=\"2\"/><path d=\"M3 11h18M12 11v8\"/>", "飲料": "<path d=\"M6 8h12l-1.5 13h-9z\"/><path d=\"M5 8h14M13 8l2-6\"/>", "咖啡": "<path d=\"M4 9h13v6a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5z\"/><path d=\"M17 11h1.5a2.5 2.5 0 0 1 0 5H17M8 3v3M12 3v3\"/>", "房租": "<path d=\"M3 11l9-7 9 7\"/><path d=\"M5 10v10h14V10M10 20v-6h4v6\"/>", "油錢": "<path d=\"M4 21V5a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v16M3 21h12M4 10h10\"/><path d=\"M14 8h2a2 2 0 0 1 2 2v6a1.5 1.5 0 0 0 3 0V8l-3-3\"/>", "大眾運輸": "<rect x=\"5\" y=\"3\" width=\"14\" height=\"14\" rx=\"3\"/><path d=\"M5 11h14M8 20l2-3M16 20l-2-3\"/><circle cx=\"9\" cy=\"14\" r=\".6\"/><circle cx=\"15\" cy=\"14\" r=\".6\"/>", "日用品": "<path d=\"M8 3h8v4H8zM7 7h10l1 14H6z\"/><path d=\"M9 12h6\"/>", "水電瓦斯": "<path d=\"M9 18h6M10 21h4\"/><path d=\"M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z\"/>"};
 const svg=k=>`<svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">${IC[k]||''}</svg>`;
-function drawBubbles(){$('#bubbles').innerHTML=D.items.map((it,i)=>{const on=sel[i]!=null,na=typeof it.rate!='number';return `<div class="bub ${on?'on':''} ${na?'na':''}" data-i="${i}"><div class="ball">${svg(it.key)}</div><div class="lbl">${it.key}${na?'<div class="sub" style="font-size:11px">資料待補</div>':''}</div><div class="slot">${on?`<input type="range" min="1" max="3" value="${sel[i]}" data-r="${i}"><div class="ticks"><span>少</span><span>普通</span><span>多</span></div>`:''}</div></div>`}).join('');
+let lastI=null;
+function drawBubbles(){$('#bubbles').innerHTML=D.items.map((it,i)=>{const on=sel[i]!=null,na=typeof it.rate!='number';return `<div class="bub ${on?'on':''} ${na?'na':''} ${i==lastI?'cur':''}" data-i="${i}"><div class="ball">${svg(it.key)}</div><div class="lbl">${it.key}${na?'<div class="sub" style="font-size:11px">資料待補</div>':''}</div></div>`}).join('');
  const n=Object.keys(sel).length;$('#go').disabled=!n;$('#go').textContent=n?'算出我的通膨':'先選 1 個以上';
- document.querySelectorAll('.bub .ball').forEach(b=>b.onclick=()=>{const i=b.parentNode.dataset.i;if(typeof D.items[i].rate!='number')return;sel[i]==null?sel[i]=2:delete sel[i];drawBubbles()});
- document.querySelectorAll('input[data-r]').forEach(r=>r.oninput=()=>{sel[r.dataset.r]=+r.value})}
+ const p=$('#panel');if(lastI!=null&&sel[lastI]!=null){p.classList.add('show');p.innerHTML=`<div class="plbl" style="display:flex;justify-content:space-between"><span>${D.items[lastI].key}：花多少？</span><button class="btn" id="rm" style="padding:2px 12px;font-size:12px">移除</button></div><input type="range" min="1" max="3" value="${sel[lastI]}" id="rng"><div class="ticks"><span>少</span><span>普通</span><span>多</span></div>`;$('#rng').oninput=e=>{sel[lastI]=+e.target.value};$('#rm').onclick=()=>{delete sel[lastI];lastI=null;drawBubbles()}}else{p.classList.remove('show');p.innerHTML='<div class="plbl sub">點泡泡選你常花的項目，最多 7 個</div>'}
+ document.querySelectorAll('.bub .ball').forEach(b=>b.onclick=()=>{const i=+b.parentNode.dataset.i;if(typeof D.items[i].rate!='number')return;if(sel[i]==null)sel[i]=2;lastI=i;drawBubbles()})}
 function compute(){
  const picked=Object.entries(sel).map(([i,w])=>({...D.items[i],w}));const ok=picked.filter(p=>typeof p.rate=='number');
  if(!ok.length){$('#out').innerHTML='<div class="glass warn"><b>官方資料還沒接上</b><div class="warntxt">各分類的 CPI 年增率還沒填入，所以暫時算不出數字。</div></div>';return}
